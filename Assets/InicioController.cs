@@ -8,7 +8,6 @@ using UnityEngine;
 public class InicioController : MonoBehaviour
 {
     public GameObject canvasJuego;
-    public AudioClip largo;
     public AudioClip musicaInicio;
     public TMP_Asset txtAsset;
     public Color colorTexto = Color.black;
@@ -17,6 +16,7 @@ public class InicioController : MonoBehaviour
     public GameObject cuadrado;
     public GameObject circulo;
     public GameObject triangulo;
+    public AudioSource glitchSonido;
 
     // Start is called before the first frame update
     void Start()
@@ -36,12 +36,16 @@ public class InicioController : MonoBehaviour
                 Camera.main.GetComponent<AnalogGlitch>().colorDrift += Time.deltaTime * 0.8f;
                 Camera.main.GetComponent<AnalogGlitch>().scanLineJitter += Time.deltaTime * 0.8f;
                 Camera.main.GetComponent<DigitalGlitch>().intensity += Time.deltaTime / 2.5f;
+                glitchSonido.volume = Camera.main.GetComponent<DigitalGlitch>().intensity / 10;
+                GetComponent<AudioSource>().volume -= Time.deltaTime / 2.5f;
             }
             else
             {
                 Camera.main.GetComponent<DigitalGlitch>().intensity = 1f;
                 Camera.main.GetComponent<AnalogGlitch>().colorDrift = 1;
                 Camera.main.GetComponent<AnalogGlitch>().scanLineJitter = 1;
+                GetComponent<AudioSource>().volume = 0;
+                glitchSonido.volume = 0.1f;
                 gameObject.SetActive(false);
                 canvasJuego.SetActive(true);
             }
@@ -52,6 +56,7 @@ public class InicioController : MonoBehaviour
     {
         if (cuadrado.GetComponent<CuadradoController>().dado && circulo.GetComponent<CirculoController>().dado && triangulo.GetComponent<TrianguloController>().dado)
         {
+            glitchSonido.Play();
             glitch = true;
         }
     }
